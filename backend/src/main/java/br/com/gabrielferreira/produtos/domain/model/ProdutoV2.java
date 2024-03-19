@@ -28,10 +28,10 @@ public class ProdutoV2 implements Serializable {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "NOME", nullable = false)
+    @Column(name = "NOME", nullable = false, unique = true)
     private String nome;
 
-    @Column(name = "PRECO", nullable = false)
+    @Column(name = "PRECO", nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
     @Column(name = "DATA_INCLUSAO", nullable = false)
