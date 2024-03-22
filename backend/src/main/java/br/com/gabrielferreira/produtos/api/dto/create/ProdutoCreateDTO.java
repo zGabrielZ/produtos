@@ -20,7 +20,7 @@ public class ProdutoCreateDTO implements Serializable {
     private static final long serialVersionUID = 7083617163385312973L;
 
     @NotBlank
-    @Size(min = 5, max = 150)
+    @Size(max = 150)
     private String nome;
 
     @NotNull
