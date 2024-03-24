@@ -59,4 +59,10 @@ public class ClienteV2Controller {
 
         return ResponseEntity.ok().body(clienteDTO);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarClientePorId(@PathVariable Long id){
+        clienteService.deletarClientePorId(id);
+        return ResponseEntity.noContent().build();
+    }
 }

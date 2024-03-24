@@ -59,6 +59,13 @@ public class ClienteV2ServiceImpl implements ClienteV2Service {
         return clienteEncontrado;
     }
 
+    @Transactional
+    @Override
+    public void deletarClientePorId(Long id) {
+        ClienteV2 clienteEncontrado = buscarClientePorId(id);
+        clienteV2Repository.delete(clienteEncontrado);
+    }
+
     private void validarSenhaAntiga(String antigaSenha, String senhaCadastrada){
         if(!antigaSenha.equals(senhaCadastrada)){
             throw new RegraDeNegocioException("Senha antiga informada é incompatível");
