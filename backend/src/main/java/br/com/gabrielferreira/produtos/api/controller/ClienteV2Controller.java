@@ -8,10 +8,7 @@ import br.com.gabrielferreira.produtos.domain.service.ClienteV2Service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -34,5 +31,13 @@ public class ClienteV2Controller {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
                 .buildAndExpand(clienteDTO.getId()).toUri();
         return ResponseEntity.created(uri).body(clienteDTO);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteDTO> buscarClientePorId(@PathVariable Long id){
+        ClienteV2 cliente = clienteService.buscarClientePorId(id);
+        ClienteDTO clienteDTO = clienteMapper.toClienteDto(cliente);
+
+        return ResponseEntity.ok().body(clienteDTO);
     }
 }

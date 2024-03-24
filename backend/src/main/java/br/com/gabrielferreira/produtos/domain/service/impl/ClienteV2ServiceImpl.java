@@ -1,5 +1,6 @@
 package br.com.gabrielferreira.produtos.domain.service.impl;
 
+import br.com.gabrielferreira.produtos.domain.exception.NaoEncontradoException;
 import br.com.gabrielferreira.produtos.domain.exception.RegraDeNegocioException;
 import br.com.gabrielferreira.produtos.domain.model.ClienteV2;
 import br.com.gabrielferreira.produtos.domain.repository.ClienteV2Repository;
@@ -25,6 +26,12 @@ public class ClienteV2ServiceImpl implements ClienteV2Service {
 
         clienteV2 = clienteV2Repository.save(clienteV2);
         return clienteV2;
+    }
+
+    @Override
+    public ClienteV2 buscarClientePorId(Long id) {
+        return clienteV2Repository.findById(id)
+                .orElseThrow(() -> new NaoEncontradoException("Cliente não encontrado"));
     }
 
     private void validarSenhaCliente(String senha){
