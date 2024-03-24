@@ -6,6 +6,7 @@ import br.com.gabrielferreira.produtos.api.dto.update.ClienteUpdateDTO;
 import br.com.gabrielferreira.produtos.domain.model.ClienteV2;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
 
 @Mapper(componentModel = "spring", uses = {FormatMapper.class})
 public interface ClienteMapper {
@@ -17,4 +18,8 @@ public interface ClienteMapper {
     @Mapping(target = "dataInclusao", qualifiedByName = "formatData")
     @Mapping(target = "dataAtualizacao", qualifiedByName = "formatData")
     ClienteDTO toClienteDto(ClienteV2 clienteV2);
+
+    default Page<ClienteDTO> toClientesDtos(Page<ClienteV2> clientes){
+        return clientes.map(this::toClienteDto);
+    }
 }

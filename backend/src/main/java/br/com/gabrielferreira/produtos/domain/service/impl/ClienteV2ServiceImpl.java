@@ -6,10 +6,14 @@ import br.com.gabrielferreira.produtos.domain.model.ClienteV2;
 import br.com.gabrielferreira.produtos.domain.repository.ClienteV2Repository;
 import br.com.gabrielferreira.produtos.domain.service.ClienteV2Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static br.com.gabrielferreira.produtos.common.utils.ConstantesUtils.*;
+import static br.com.gabrielferreira.produtos.domain.specification.ClienteSpecification.*;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +68,16 @@ public class ClienteV2ServiceImpl implements ClienteV2Service {
     public void deletarClientePorId(Long id) {
         ClienteV2 clienteEncontrado = buscarClientePorId(id);
         clienteV2Repository.delete(clienteEncontrado);
+    }
+
+    @Override
+    public Page<ClienteV2> buscarClientesPaginados(Pageable pageable, String nome, String email) {
+        Specification<ClienteV2> specification = Specification.where(
+                buscarPorNome(nome)
+                        .and(buscarPorEmail(email))
+        );
+
+        return clienteV2Repository.findAll(specification, pageable);
     }
 
     private void validarSenhaAntiga(String antigaSenha, String senhaCadastrada){

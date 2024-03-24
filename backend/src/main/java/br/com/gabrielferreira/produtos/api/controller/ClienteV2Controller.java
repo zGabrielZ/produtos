@@ -9,10 +9,13 @@ import br.com.gabrielferreira.produtos.domain.model.ClienteV2;
 import br.com.gabrielferreira.produtos.domain.service.ClienteV2Service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
 
 @RestController
@@ -64,5 +67,15 @@ public class ClienteV2Controller {
     public ResponseEntity<Void> deletarClientePorId(@PathVariable Long id){
         clienteService.deletarClientePorId(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ClienteDTO>> buscarClientesPaginados(@PageableDefault(size = 5, sort = "dataInclusao", direction = Sort.Direction.DESC) Pageable pageable,
+                                                                    @RequestParam(required = false) String nome,
+                                                                    @RequestParam(required = false) String email){
+        Page<ClienteV2> clientes = clienteService.buscarClientesPaginados(pageable, nome, email);
+        Page<ClienteDTO> clienteDTOS = clienteMapper.toClientesDtos(clientes);
+
+        return ResponseEntity.ok().body(clienteDTOS);
     }
 }
