@@ -34,6 +34,18 @@ public class ClienteV2ServiceImpl implements ClienteV2Service {
                 .orElseThrow(() -> new NaoEncontradoException("Cliente não encontrado"));
     }
 
+    @Transactional
+    @Override
+    public ClienteV2 atualizarCliente(Long id, ClienteV2 clienteV2) {
+        ClienteV2 clienteEncontrado = buscarClientePorId(id);
+
+        clienteV2.setNome(clienteV2.getNome().trim());
+        clienteEncontrado.setNome(clienteV2.getNome());
+
+        clienteEncontrado = clienteV2Repository.save(clienteEncontrado);
+        return clienteEncontrado;
+    }
+
     private void validarSenhaCliente(String senha){
         if(!isPossuiCaracteresEspecias(senha)){
             throw new RegraDeNegocioException("A senha informada tem que ter pelo menos uma caractere especial");

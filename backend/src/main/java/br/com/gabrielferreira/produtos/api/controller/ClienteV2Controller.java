@@ -2,6 +2,7 @@ package br.com.gabrielferreira.produtos.api.controller;
 
 import br.com.gabrielferreira.produtos.api.dto.ClienteDTO;
 import br.com.gabrielferreira.produtos.api.dto.create.ClienteCreateDTO;
+import br.com.gabrielferreira.produtos.api.dto.update.ClienteUpdateDTO;
 import br.com.gabrielferreira.produtos.api.mapper.ClienteMapper;
 import br.com.gabrielferreira.produtos.domain.model.ClienteV2;
 import br.com.gabrielferreira.produtos.domain.service.ClienteV2Service;
@@ -37,6 +38,15 @@ public class ClienteV2Controller {
     public ResponseEntity<ClienteDTO> buscarClientePorId(@PathVariable Long id){
         ClienteV2 cliente = clienteService.buscarClientePorId(id);
         ClienteDTO clienteDTO = clienteMapper.toClienteDto(cliente);
+
+        return ResponseEntity.ok().body(clienteDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteDTO> atualizarCliente(@PathVariable Long id, @Valid @RequestBody ClienteUpdateDTO clienteUpdateDTO){
+        ClienteV2 cliente = clienteMapper.toCliente(clienteUpdateDTO);
+        ClienteV2 clienteAtualizado = clienteService.atualizarCliente(id, cliente);
+        ClienteDTO clienteDTO = clienteMapper.toClienteDto(clienteAtualizado);
 
         return ResponseEntity.ok().body(clienteDTO);
     }
