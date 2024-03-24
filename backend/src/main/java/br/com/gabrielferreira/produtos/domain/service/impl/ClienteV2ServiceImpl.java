@@ -46,6 +46,25 @@ public class ClienteV2ServiceImpl implements ClienteV2Service {
         return clienteEncontrado;
     }
 
+    @Transactional
+    @Override
+    public ClienteV2 atualizarSenhaCliente(Long id, String novaSenha, String antigaSenha) {
+        ClienteV2 clienteEncontrado = buscarClientePorId(id);
+
+        validarSenhaCliente(novaSenha);
+        validarSenhaAntiga(antigaSenha, clienteEncontrado.getSenha());
+        clienteEncontrado.setSenha(novaSenha);
+
+        clienteEncontrado = clienteV2Repository.save(clienteEncontrado);
+        return clienteEncontrado;
+    }
+
+    private void validarSenhaAntiga(String antigaSenha, String senhaCadastrada){
+        if(!antigaSenha.equals(senhaCadastrada)){
+            throw new RegraDeNegocioException("Senha antiga informada é incompatível");
+        }
+    }
+
     private void validarSenhaCliente(String senha){
         if(!isPossuiCaracteresEspecias(senha)){
             throw new RegraDeNegocioException("A senha informada tem que ter pelo menos uma caractere especial");
