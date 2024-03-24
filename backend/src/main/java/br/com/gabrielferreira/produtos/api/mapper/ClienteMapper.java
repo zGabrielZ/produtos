@@ -1,0 +1,17 @@
+package br.com.gabrielferreira.produtos.api.mapper;
+
+import br.com.gabrielferreira.produtos.api.dto.ClienteDTO;
+import br.com.gabrielferreira.produtos.api.dto.create.ClienteCreateDTO;
+import br.com.gabrielferreira.produtos.domain.model.ClienteV2;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+@Mapper(componentModel = "spring", uses = {FormatMapper.class})
+public interface ClienteMapper {
+
+    ClienteV2 toCliente(ClienteCreateDTO clienteCreateDTO);
+
+    @Mapping(target = "dataInclusao", qualifiedByName = "formatData")
+    @Mapping(target = "dataAtualizacao", qualifiedByName = "formatData")
+    ClienteDTO toClienteDto(ClienteV2 clienteV2);
+}
