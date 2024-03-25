@@ -1,5 +1,6 @@
 package br.com.gabrielferreira.produtos.api.dto;
 
+import br.com.gabrielferreira.produtos.domain.model.enums.PedidoStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,8 @@ public class PedidoDTO implements Serializable {
     private ZonedDateTime data;
 
     private ZonedDateTime dataFinalizado;
+
+    private PedidoStatusEnum pedidoStatus;
 
     private ZonedDateTime dataInclusao;
 
