@@ -1,0 +1,28 @@
+package br.com.gabrielferreira.produtos.api.dto.create;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serial;
+import java.io.Serializable;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ItemPedidoCreateDTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -3669665560560096730L;
+
+    @NotNull
+    @Positive
+    private Integer quantidade;
+
+    @NotNull
+    private Long idProduto;
+}

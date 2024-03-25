@@ -38,7 +38,7 @@ public class ClienteV2 implements Serializable {
     @Column(name = "SENHA", nullable = false)
     private String senha;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cliente")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cliente", cascade = CascadeType.REMOVE)
     private List<PedidoV2> pedidos = new ArrayList<>();
 
     @Column(name = "DATA_INCLUSAO", nullable = false)

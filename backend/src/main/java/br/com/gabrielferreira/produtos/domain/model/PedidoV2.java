@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class PedidoV2 implements Serializable {
     @JoinColumn(name = "ID_CLIENTE", nullable = false)
     private ClienteV2 cliente;
 
-    @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<ItemPedidoV2> itensPedidos = new ArrayList<>();
 
     @Column(name = "DATA_INCLUSAO", nullable = false)
@@ -51,6 +52,11 @@ public class PedidoV2 implements Serializable {
 
     @Column(name = "DATA_ATUALIZACAO")
     private ZonedDateTime dataAtualizacao;
+
+    public BigDecimal getPrecoTotal(){
+        return this.itensPedidos.stream().map(ItemPedidoV2::getPreco)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
     @PrePersist
     public void prePersist(){
