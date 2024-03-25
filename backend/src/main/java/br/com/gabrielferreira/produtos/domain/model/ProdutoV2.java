@@ -7,6 +7,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static br.com.gabrielferreira.produtos.common.utils.DataUtils.*;
 
@@ -33,6 +35,9 @@ public class ProdutoV2 implements Serializable {
 
     @Column(name = "PRECO", nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
+
+    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
+    private List<ItemPedidoV2> itensPedidos = new ArrayList<>();
 
     @Column(name = "DATA_INCLUSAO", nullable = false)
     private ZonedDateTime dataInclusao;

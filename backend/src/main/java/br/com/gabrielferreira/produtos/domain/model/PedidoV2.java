@@ -1,5 +1,6 @@
 package br.com.gabrielferreira.produtos.domain.model;
 
+import br.com.gabrielferreira.produtos.domain.model.enums.PedidoStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,31 +16,35 @@ import static br.com.gabrielferreira.produtos.common.utils.DataUtils.UTC;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"pedidos"})
+@ToString(exclude = {"cliente", "itensPedidos"})
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "TB_CLIENTE")
-public class ClienteV2 implements Serializable {
+@Table(name = "TB_PEDIDO")
+public class PedidoV2 implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -3256890072506817482L;
+    private static final long serialVersionUID = 9008391171942665148L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "NOME", nullable = false)
-    private String nome;
+    @Column(name = "DATA", nullable = false)
+    private ZonedDateTime data;
 
-    @Column(name = "EMAIL", nullable = false, unique = true)
-    private String email;
+    @Column(name = "DATA_FINALIZADO")
+    private ZonedDateTime dataFinalizado;
 
-    @Column(name = "SENHA", nullable = false)
-    private String senha;
+    @Enumerated(EnumType.STRING)
+    private PedidoStatusEnum pedidoStatus;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cliente")
-    private List<PedidoV2> pedidos = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_CLIENTE", nullable = false)
+    private ClienteV2 cliente;
+
+    @OneToMany(mappedBy = "pedido", fetch = FetchType.LAZY)
+    private List<ItemPedidoV2> itensPedidos = new ArrayList<>();
 
     @Column(name = "DATA_INCLUSAO", nullable = false)
     private ZonedDateTime dataInclusao;
