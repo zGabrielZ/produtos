@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +40,6 @@ public class PedidoV2ServiceImpl implements PedidoV2Service {
             ProdutoV2 produto = produtoV2Service.buscarProdutoPorId(itemPedido.getProduto().getId());
             itemPedido.setPedido(pedidoV2);
             itemPedido.setProduto(produto);
-            itemPedido.setPreco(produto.getPreco().multiply(BigDecimal.valueOf(itemPedido.getQuantidade())));
         }
 
         pedidoV2.setData(ZonedDateTime.now(UTC));

@@ -22,7 +22,7 @@ public class ItemPedidoDTO implements Serializable {
 
     private Integer quantidade;
 
-    private BigDecimal preco;
+    private BigDecimal subTotal;
 
     private ProdutoDTO produto;
 }

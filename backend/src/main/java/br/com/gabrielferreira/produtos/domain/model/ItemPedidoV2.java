@@ -28,9 +28,6 @@ public class ItemPedidoV2 implements Serializable {
     @Column(name = "QUANTIDADE", nullable = false)
     private Integer quantidade;
 
-    @Column(name = "PRECO", nullable = false)
-    private BigDecimal preco;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_PRODUTO", nullable = false)
     private ProdutoV2 produto;
@@ -38,4 +35,8 @@ public class ItemPedidoV2 implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_PEDIDO", nullable = false)
     private PedidoV2 pedido;
+
+    public BigDecimal getSubTotal(){
+        return BigDecimal.valueOf(quantidade).multiply(produto.getPreco());
+    }
 }

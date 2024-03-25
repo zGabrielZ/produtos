@@ -54,7 +54,7 @@ public class PedidoV2 implements Serializable {
     private ZonedDateTime dataAtualizacao;
 
     public BigDecimal getPrecoTotal(){
-        return this.itensPedidos.stream().map(ItemPedidoV2::getPreco)
+        return this.itensPedidos.stream().map(ItemPedidoV2::getSubTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
