@@ -1,5 +1,6 @@
 package br.com.gabrielferreira.produtos.domain.service.impl;
 
+import br.com.gabrielferreira.produtos.domain.exception.NaoEncontradoException;
 import br.com.gabrielferreira.produtos.domain.exception.RegraDeNegocioException;
 import br.com.gabrielferreira.produtos.domain.model.ClienteV2;
 import br.com.gabrielferreira.produtos.domain.model.ItemPedidoV2;
@@ -48,6 +49,12 @@ public class PedidoV2ServiceImpl implements PedidoV2Service {
 
         pedidoV2 = pedidoV2Repository.save(pedidoV2);
         return pedidoV2;
+    }
+
+    @Override
+    public PedidoV2 buscarPedidoPorId(Long idCliente, Long idPedido) {
+        return pedidoV2Repository.buscarPedido(idCliente, idPedido)
+                .orElseThrow(() -> new NaoEncontradoException("Pedido não encontrado"));
     }
 
     private void validarItemPedidoDuplicado(List<ItemPedidoV2> itemPedidoV2s){

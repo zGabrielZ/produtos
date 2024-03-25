@@ -1,6 +1,7 @@
 package br.com.gabrielferreira.produtos.api.mapper;
 
 import br.com.gabrielferreira.produtos.api.dto.ClienteDTO;
+import br.com.gabrielferreira.produtos.api.dto.ClienteResumidoDTO;
 import br.com.gabrielferreira.produtos.api.dto.create.ClienteCreateDTO;
 import br.com.gabrielferreira.produtos.api.dto.update.ClienteUpdateDTO;
 import br.com.gabrielferreira.produtos.domain.model.ClienteV2;
@@ -22,4 +23,6 @@ public interface ClienteMapper {
     default Page<ClienteDTO> toClientesDtos(Page<ClienteV2> clientes){
         return clientes.map(this::toClienteDto);
     }
+
+    ClienteResumidoDTO toClienteResumidoDto(ClienteV2 clienteV2);
 }

@@ -1,6 +1,7 @@
 package br.com.gabrielferreira.produtos.api.controller;
 
 import br.com.gabrielferreira.produtos.api.dto.PedidoDTO;
+import br.com.gabrielferreira.produtos.api.dto.PedidoResumidoDTO;
 import br.com.gabrielferreira.produtos.api.dto.create.PedidoCreateDTO;
 import br.com.gabrielferreira.produtos.api.mapper.PedidoMapper;
 import br.com.gabrielferreira.produtos.domain.model.PedidoV2;
@@ -31,5 +32,13 @@ public class PedidoV2Controller {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
                 .buildAndExpand(pedidoDTO.getId()).toUri();
         return ResponseEntity.created(uri).body(pedidoDTO);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PedidoResumidoDTO> buscarPedidoPorId(@PathVariable Long idCliente, @PathVariable Long id){
+        PedidoV2 pedido = pedidoV2Service.buscarPedidoPorId(idCliente, id);
+        PedidoResumidoDTO pedidoResumidoDTO = pedidoMapper.toPedidoResumidoDto(pedido);
+
+        return ResponseEntity.ok().body(pedidoResumidoDTO);
     }
 }
