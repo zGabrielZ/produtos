@@ -1,5 +1,7 @@
 package br.com.gabrielferreira.notificacao.api.dto;
 
+import br.com.gabrielferreira.notificacao.domain.model.enums.EmailTemplateEnum;
+import br.com.gabrielferreira.notificacao.domain.model.enums.NotificacaoStatusEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Map;
 
 @Data
 @Builder
@@ -23,16 +26,22 @@ public class NotificacaoDTO implements Serializable {
 
     @NotBlank
     @Size(min = 1, max = 150)
-    private String titulo;
-
-    @Size(min = 1, max = 255)
-    private String descricao;
+    private String nomeRemetente;
 
     @NotBlank
     @Size(min = 1, max = 150)
-    private String de;
+    private String titulo;
 
     @NotNull
     @NotEmpty
     private String[] destinatarios;
+
+    @NotNull
+    private EmailTemplateEnum emailTemplate;
+
+    @NotNull
+    @NotEmpty
+    private transient Map<String, Object> dados;
+
+    private NotificacaoStatusEnum status;
 }

@@ -65,6 +65,16 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -85,6 +95,14 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.11</version>
+				<configuration>
+					<excludes>
+						<exclude>br/com/gabrielferreira/notificacao/domain/model/*</exclude>
+						<exclude>br/com/gabrielferreira/notificacao/domain/model/enums/*</exclude>
+						<exclude>br/com/gabrielferreira/notificacao/domain/service/impl/GoogleEmailServiceImpl.class</exclude>
+						<exclude>br/com/gabrielferreira/notificacao/api/mapper/*</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>

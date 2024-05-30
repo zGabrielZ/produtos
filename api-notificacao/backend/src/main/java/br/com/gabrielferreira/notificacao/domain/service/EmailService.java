@@ -2,7 +2,7 @@ package br.com.gabrielferreira.notificacao.domain.service;
 
 import br.com.gabrielferreira.notificacao.domain.model.Notificacao;
 
-public interface NotificacaoService {
+public interface EmailService {
 
-    Notificacao enviarNotificacao(Notificacao notificacao);
+    Notificacao enviarEmail(Notificacao notificacao);
 }

@@ -1,0 +1,12 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_REMETENTE}
+    password: ${SENHA_REMETENTE}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
