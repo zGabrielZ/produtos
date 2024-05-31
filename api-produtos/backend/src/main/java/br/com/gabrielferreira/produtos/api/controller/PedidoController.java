@@ -45,7 +45,7 @@ public class PedidoController {
     @PostMapping
     public ResponseEntity<PedidoDTO> cadastrarPedido(@PathVariable Long idUsuario, @Valid @RequestBody PedidoCreateDTO pedidoCreateDTO){
         Pedido pedido = pedidoMapper.toPedido(pedidoCreateDTO);
-        Pedido pedidoCadastrado = pedidoService.salvarPedido(idUsuario, pedido);
+        Pedido pedidoCadastrado = pedidoService.salvarPedidoEnviarNotificacao(idUsuario, pedido);
         PedidoDTO pedidoDTO = pedidoMapper.toPedidoDto(pedidoCadastrado);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
@@ -80,7 +80,7 @@ public class PedidoController {
     })
     @PutMapping("/{id}/finalizar")
     public ResponseEntity<Void> finalizarPedidoPorId(@PathVariable Long idUsuario, @PathVariable Long id){
-        pedidoService.finalizarPedidoPorId(idUsuario, id);
+        pedidoService.finalizarPedidoPorIdEnviarNotificacao(idUsuario, id);
 
         return ResponseEntity.ok().build();
     }
@@ -96,7 +96,7 @@ public class PedidoController {
     })
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<Void> cancelarPedidoPorId(@PathVariable Long idUsuario, @PathVariable Long id){
-        pedidoService.cancelarPedidoPorId(idUsuario, id);
+        pedidoService.cancelarPedidoPorIdEnviarNotificacao(idUsuario, id);
 
         return ResponseEntity.ok().build();
     }

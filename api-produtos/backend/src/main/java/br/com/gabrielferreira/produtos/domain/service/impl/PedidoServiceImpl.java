@@ -1,5 +1,6 @@
 package br.com.gabrielferreira.produtos.domain.service.impl;
 
+import br.com.gabrielferreira.produtos.commons.dto.NotificacaoDTO;
 import br.com.gabrielferreira.produtos.domain.exception.NaoEncontradoException;
 import br.com.gabrielferreira.produtos.domain.exception.RegraDeNegocioException;
 import br.com.gabrielferreira.produtos.domain.model.Usuario;
@@ -7,11 +8,13 @@ import br.com.gabrielferreira.produtos.domain.model.ItemPedido;
 import br.com.gabrielferreira.produtos.domain.model.Pedido;
 import br.com.gabrielferreira.produtos.domain.model.Produto;
 import br.com.gabrielferreira.produtos.domain.model.enums.PedidoStatusEnum;
+import br.com.gabrielferreira.produtos.domain.publisher.PedidoNotificacaoEventPublisher;
 import br.com.gabrielferreira.produtos.domain.repository.PedidoRepository;
 import br.com.gabrielferreira.produtos.domain.service.UsuarioService;
 import br.com.gabrielferreira.produtos.domain.service.PedidoService;
 import br.com.gabrielferreira.produtos.domain.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,9 +24,11 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 import static br.com.gabrielferreira.produtos.common.utils.DataUtils.*;
+import static br.com.gabrielferreira.produtos.common.utils.ConstantesUtils.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PedidoServiceImpl implements PedidoService {
 
     private final PedidoRepository pedidoRepository;
@@ -31,6 +36,8 @@ public class PedidoServiceImpl implements PedidoService {
     private final UsuarioService usuarioService;
 
     private final ProdutoService produtoService;
+
+    private final PedidoNotificacaoEventPublisher pedidoNotificacaoEventPublisher;
 
     @Transactional
     @Override
@@ -61,7 +68,7 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Transactional
     @Override
-    public void finalizarPedidoPorId(Long idUsuario, Long idPedido) {
+    public Pedido finalizarPedidoPorId(Long idUsuario, Long idPedido) {
         validarUsuarioExistente(idUsuario);
         Pedido pedido = buscarPedidoPorIdUsuarioIdPedido(idUsuario, idPedido);
         validarPedidoFinalizado(pedido.getPedidoStatus());
@@ -70,12 +77,13 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setDataFinalizado(ZonedDateTime.now(UTC));
         pedido.setPedidoStatus(PedidoStatusEnum.FINALIZADO);
 
-        pedidoRepository.save(pedido);
+        pedido = pedidoRepository.save(pedido);
+        return pedido;
     }
 
     @Transactional
     @Override
-    public void cancelarPedidoPorId(Long idUsuario, Long idPedido) {
+    public Pedido cancelarPedidoPorId(Long idUsuario, Long idPedido) {
         validarUsuarioExistente(idUsuario);
         Pedido pedido = buscarPedidoPorIdUsuarioIdPedido(idUsuario, idPedido);
         validarPedidoCancelado(pedido.getPedidoStatus());
@@ -84,13 +92,55 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setDataCancelado(ZonedDateTime.now(UTC));
         pedido.setPedidoStatus(PedidoStatusEnum.CANCELADO);
 
-        pedidoRepository.save(pedido);
+        pedido = pedidoRepository.save(pedido);
+        return pedido;
     }
 
     @Override
     public Page<Pedido> buscarPedidosPaginados(Long idUsuario, Pageable pageable) {
         validarUsuarioExistente(idUsuario);
         return pedidoRepository.buscarPedidos(idUsuario, pageable);
+    }
+
+    @Transactional
+    @Override
+    public Pedido salvarPedidoEnviarNotificacao(Long idUsuario, Pedido pedido) {
+        pedido = salvarPedido(idUsuario, pedido);
+
+        try {
+            NotificacaoDTO notificacaoDTO = montarPedidoRealizado(pedido);
+            pedidoNotificacaoEventPublisher.publishPedidoNotificacaoEvent(notificacaoDTO);
+        } catch (Exception e){
+            log.error("Erro ao enviar notificação quando realizar o pedido {}", e.getMessage());
+        }
+
+        return pedido;
+    }
+
+    @Transactional
+    @Override
+    public void finalizarPedidoPorIdEnviarNotificacao(Long idUsuario, Long idPedido) {
+        Pedido pedido = finalizarPedidoPorId(idUsuario, idPedido);
+
+        try {
+            NotificacaoDTO notificacaoDTO = montarPedidoFinalizado(pedido);
+            pedidoNotificacaoEventPublisher.publishPedidoNotificacaoEvent(notificacaoDTO);
+        } catch (Exception e){
+            log.error("Erro ao enviar notificação quando for finalizar pedido {}", e.getMessage());
+        }
+    }
+
+    @Transactional
+    @Override
+    public void cancelarPedidoPorIdEnviarNotificacao(Long idUsuario, Long idPedido) {
+        Pedido pedido = cancelarPedidoPorId(idUsuario, idPedido);
+
+        try {
+            NotificacaoDTO notificacaoDTO = montarPedidoCancelado(pedido);
+            pedidoNotificacaoEventPublisher.publishPedidoNotificacaoEvent(notificacaoDTO);
+        } catch (Exception e){
+            log.error("Erro ao enviar notificação quando for cancelar pedido {}", e.getMessage());
+        }
     }
 
     private Pedido buscarPedidoPorIdUsuarioIdPedido(Long idUsuario, Long idPedido) {

@@ -10,9 +10,15 @@ public interface PedidoService {
 
     Pedido buscarPedidoPorId(Long idUsuario, Long idPedido);
 
-    void finalizarPedidoPorId(Long idUsuario, Long idPedido);
+    Pedido finalizarPedidoPorId(Long idUsuario, Long idPedido);
 
-    void cancelarPedidoPorId(Long idUsuario, Long idPedido);
+    Pedido cancelarPedidoPorId(Long idUsuario, Long idPedido);
 
     Page<Pedido> buscarPedidosPaginados(Long idUsuario, Pageable pageable);
+
+    Pedido salvarPedidoEnviarNotificacao(Long idUsuario, Pedido pedido);
+
+    void finalizarPedidoPorIdEnviarNotificacao(Long idUsuario, Long idPedido);
+
+    void cancelarPedidoPorIdEnviarNotificacao(Long idUsuario, Long idPedido);
 }
