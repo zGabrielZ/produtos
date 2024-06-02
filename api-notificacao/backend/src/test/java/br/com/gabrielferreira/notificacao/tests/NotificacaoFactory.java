@@ -2,7 +2,6 @@ package br.com.gabrielferreira.notificacao.tests;
 
 import br.com.gabrielferreira.notificacao.api.dto.NotificacaoDTO;
 import br.com.gabrielferreira.notificacao.domain.model.Notificacao;
-import br.com.gabrielferreira.notificacao.domain.model.enums.EmailTemplateEnum;
 
 import java.util.HashMap;
 import java.util.Map;

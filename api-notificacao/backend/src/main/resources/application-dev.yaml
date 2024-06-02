@@ -10,3 +10,22 @@ spring:
           auth: true
           starttls:
             enable: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: gabriel
+    password: gabriel
+
+broker:
+  exchange:
+    pedido:
+      notificacao:
+        event: ms.produto.notificacaoevent
+  key:
+    pedido:
+      notificacao:
+        event: ms.produto.notificacaoevent.key
+  queue:
+    pedido:
+      notificacao:
+        event: ms.produto.notificacaoevent.queue

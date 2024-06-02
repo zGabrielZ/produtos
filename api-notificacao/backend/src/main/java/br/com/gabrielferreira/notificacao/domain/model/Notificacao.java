@@ -1,7 +1,7 @@
 package br.com.gabrielferreira.notificacao.domain.model;
 
-import br.com.gabrielferreira.notificacao.domain.model.enums.EmailTemplateEnum;
 import br.com.gabrielferreira.notificacao.domain.model.enums.NotificacaoStatusEnum;
+import br.com.gabrielferreira.produtos.commons.enums.EmailTemplateEnum;
 import lombok.*;
 
 import java.io.Serial;
