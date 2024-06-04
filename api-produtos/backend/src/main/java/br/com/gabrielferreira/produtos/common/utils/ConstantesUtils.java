@@ -76,9 +76,9 @@ public class ConstantesUtils {
         ZonedDateTime dataPedido = toFusoPadraoSistema(pedido.getData());
         PedidoDTO pedidoDTO = PedidoDTO.builder()
                 .descricao(usuario.getNome().concat(", seu pedido já foi encaminhado"))
-                .codigoPedido(pedido.getId().toString())
+                .codigoPedido(pedido.getId() != null ? pedido.getId().toString() : null)
                 .dataPedido(FORMAT_DATA_HORA_MINUTO_SEGUNDO.format(dataPedido))
-                .statusPedido(pedido.getPedidoStatus().toString())
+                .statusPedido(pedido.getPedidoStatus() != null ? pedido.getPedidoStatus().toString() : null)
                 .valorTotalPedido(valorMonetarioBrasil(pedido.getPrecoTotal()))
                 .itensPedidos(new ArrayList<>())
                 .build();

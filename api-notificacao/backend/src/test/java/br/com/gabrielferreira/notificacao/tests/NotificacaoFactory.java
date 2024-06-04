@@ -1,7 +1,8 @@
 package br.com.gabrielferreira.notificacao.tests;
 
-import br.com.gabrielferreira.notificacao.api.dto.NotificacaoDTO;
 import br.com.gabrielferreira.notificacao.domain.model.Notificacao;
+import br.com.gabrielferreira.produtos.commons.dto.NotificacaoDTO;
+import br.com.gabrielferreira.produtos.commons.enums.EmailTemplateEnum;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,13 +11,13 @@ public class NotificacaoFactory {
 
     private NotificacaoFactory(){}
 
-    public static NotificacaoDTO criarNotificacaoEmail(){
+    public static Notificacao criarNotificacaoEmailModel(){
         Map<String, Object> dados = new HashMap<>();
         dados.put("descricao", "Seu pedido já foi encaminhado");
         dados.put("codigoPedido", 2L);
         dados.put("dataPedido", "29/05/2024 10:00:00");
 
-        return NotificacaoDTO.builder()
+        return Notificacao.builder()
                 .nomeRemetente("Gabriel Ferreira")
                 .titulo("Pedido aberto")
                 .destinatarios(new String[]{"teste@email.com.br"})
@@ -25,14 +26,15 @@ public class NotificacaoFactory {
                 .build();
     }
 
-    public static Notificacao criarNotificacaoEmailModel(){
-        NotificacaoDTO notificacaoDTO = criarNotificacaoEmail();
-        return Notificacao.builder()
-                .nomeRemetente(notificacaoDTO.getNomeRemetente())
-                .titulo(notificacaoDTO.getTitulo())
-                .destinatarios(notificacaoDTO.getDestinatarios())
-                .emailTemplate(notificacaoDTO.getEmailTemplate())
-                .dados(notificacaoDTO.getDados())
+    public static NotificacaoDTO criarNotificacaoEmailDto(){
+        Notificacao notificacao = criarNotificacaoEmailModel();
+
+        return NotificacaoDTO.builder()
+                .nomeRemetente(notificacao.getNomeRemetente())
+                .titulo(notificacao.getTitulo())
+                .destinatarios(notificacao.getDestinatarios())
+                .emailTemplate(notificacao.getEmailTemplate())
+                .dados(notificacao.getDados())
                 .build();
     }
 }

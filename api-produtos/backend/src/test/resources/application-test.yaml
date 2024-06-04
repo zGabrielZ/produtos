@@ -14,3 +14,18 @@ spring:
         format_sql: true
   flyway:
     enabled: false
+
+# Foi preciso adicionar no arquivo de teste pois o código necessita essa adição quando subir a aplicação
+broker:
+  exchange:
+    pedido:
+      notificacao:
+        event: ms.produto.notificacaoevent.teste
+  key:
+    pedido:
+      notificacao:
+        event: ms.produto.notificacaoevent.key.teste
+  queue:
+    pedido:
+      notificacao:
+        event: ms.produto.notificacaoevent.queue.teste

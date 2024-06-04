@@ -4,7 +4,6 @@ import br.com.gabrielferreira.notificacao.domain.model.Notificacao;
 import br.com.gabrielferreira.notificacao.domain.model.enums.NotificacaoStatusEnum;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -15,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class NotificacaoServiceImplTest {
 
-    @Mock
     private NotificacaoServiceImpl notificacaoService;
 
     private Notificacao notificacao;

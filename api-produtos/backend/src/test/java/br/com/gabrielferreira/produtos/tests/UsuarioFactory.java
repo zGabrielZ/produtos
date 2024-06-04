@@ -4,7 +4,9 @@ import br.com.gabrielferreira.produtos.api.dto.create.PerfilCreateDTO;
 import br.com.gabrielferreira.produtos.api.dto.create.UsuarioCreateDTO;
 import br.com.gabrielferreira.produtos.api.dto.update.UsuarioSenhaUpdateDTO;
 import br.com.gabrielferreira.produtos.api.dto.update.UsuarioUpdateDTO;
+import br.com.gabrielferreira.produtos.domain.model.Usuario;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,18 @@ public class UsuarioFactory {
         return UsuarioSenhaUpdateDTO.builder()
                 .antigaSenha("@Aa123")
                 .novaSenha("@Aa2024")
+                .build();
+    }
+
+    public static Usuario criarUsuarioModel(Long id){
+        return Usuario.builder()
+                .id(id)
+                .nome("Teste 123")
+                .email("teste@email.com")
+                .senha("123")
+                .pedidos(new ArrayList<>())
+                .perfis(new ArrayList<>())
+                .dataInclusao(ZonedDateTime.now())
                 .build();
     }
 }

@@ -57,7 +57,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>br.com.gabrielferreira.produtos.commons</groupId>
+			<groupId>br.com.gabrielferreira.produtos</groupId>
 			<artifactId>commons</artifactId>
 			<version>1.0</version>
 		</dependency>
@@ -87,7 +87,6 @@
 						<exclude>br/com/gabrielferreira/notificacao/domain/model/*</exclude>
 						<exclude>br/com/gabrielferreira/notificacao/domain/model/enums/*</exclude>
 						<exclude>br/com/gabrielferreira/notificacao/domain/service/impl/GoogleEmailServiceImpl.class</exclude>
-						<exclude>br/com/gabrielferreira/notificacao/api/mapper/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
