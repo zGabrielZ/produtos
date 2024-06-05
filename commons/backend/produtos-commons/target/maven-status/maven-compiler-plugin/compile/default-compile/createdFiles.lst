@@ -1,7 +1,0 @@
-br\com\gabrielferreira\produtos\commons\dto\NotificacaoDTO$NotificacaoDTOBuilder.class
-br\com\gabrielferreira\produtos\commons\dto\NotificacaoDTO.class
-br\com\gabrielferreira\produtos\commons\dto\PedidoDTO.class
-br\com\gabrielferreira\produtos\commons\dto\ItemPedidoDTO$ItemPedidoDTOBuilder.class
-br\com\gabrielferreira\produtos\commons\enums\EmailTemplateEnum.class
-br\com\gabrielferreira\produtos\commons\dto\ItemPedidoDTO.class
-br\com\gabrielferreira\produtos\commons\dto\PedidoDTO$PedidoDTOBuilder.class
