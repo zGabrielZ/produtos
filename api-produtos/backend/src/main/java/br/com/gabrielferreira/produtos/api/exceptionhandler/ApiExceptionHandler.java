@@ -1,6 +1,7 @@
 package br.com.gabrielferreira.produtos.api.exceptionhandler;
 
 import br.com.gabrielferreira.produtos.api.mapper.ErroPadraoMapper;
+import br.com.gabrielferreira.produtos.domain.exception.MsgException;
 import br.com.gabrielferreira.produtos.domain.exception.NaoEncontradoException;
 import br.com.gabrielferreira.produtos.domain.exception.RegraDeNegocioException;
 import br.com.gabrielferreira.produtos.domain.exception.model.ErroPadrao;
@@ -17,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -75,5 +78,10 @@ public class ApiExceptionHandler {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         ErroPadrao erroPadrao = erroPadraoMapper.toErroPadrao(toFusoPadraoSistema(ZonedDateTime.now()), httpStatus.value(), "Violação de integridade", "Esta entidade possui relacionamento", request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public final ResponseEntity<Object> handleResourceNotFound(Exception ex) {
+        throw new MsgException(ex.getMessage());
     }
 }
