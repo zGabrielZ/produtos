@@ -3,16 +3,16 @@ package br.com.gabrielferreira.notificacao.domain.service.impl;
 import br.com.gabrielferreira.notificacao.domain.model.Notificacao;
 import br.com.gabrielferreira.notificacao.domain.model.enums.NotificacaoStatusEnum;
 import br.com.gabrielferreira.notificacao.domain.service.EmailService;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-@Slf4j
+@Log4j2
 @Service
 public class LogEmailServiceImpl implements EmailService {
 
     @Override
     public Notificacao enviarEmail(Notificacao notificacao) {
-        log.info("Notificação a enviar {}", notificacao);
+        log.debug("enviarEmail notificação : {}", notificacao);
         notificacao.setStatus(NotificacaoStatusEnum.ENVIADO);
         return notificacao;
     }

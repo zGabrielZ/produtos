@@ -5,3 +5,6 @@ spring:
   profiles:
     active:
       - ${APP_PROFILE:dev}
+  output:
+    ansi:
+      enabled: ALWAYS

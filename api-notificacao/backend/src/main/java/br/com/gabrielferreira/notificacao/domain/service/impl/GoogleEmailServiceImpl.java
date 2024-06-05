@@ -5,7 +5,7 @@ import br.com.gabrielferreira.notificacao.domain.model.enums.NotificacaoStatusEn
 import br.com.gabrielferreira.notificacao.domain.service.EmailService;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-@Slf4j
+@Log4j2
 @Service
 public class GoogleEmailServiceImpl implements EmailService {
 
@@ -31,7 +31,7 @@ public class GoogleEmailServiceImpl implements EmailService {
 
     @Override
     public Notificacao enviarEmail(Notificacao notificacao) {
-        log.info("Notificação a enviar {}", notificacao);
+        log.debug("enviarEmail notificação : {}", notificacao);
 
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();

@@ -5,7 +5,7 @@ import br.com.gabrielferreira.notificacao.domain.model.enums.NotificacaoStatusEn
 import br.com.gabrielferreira.notificacao.domain.service.NotificacaoService;
 import br.com.gabrielferreira.produtos.commons.dto.NotificacaoDTO;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -15,7 +15,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
-@Slf4j
+@Log4j2
 @RequiredArgsConstructor
 public class PedidoNotificacaoEventConsumer {
 
@@ -27,7 +27,7 @@ public class PedidoNotificacaoEventConsumer {
             key = "${broker.key.pedido.notificacao.event}"
     ))
     public void listenPedidoNotifcacaoEvent(@Payload NotificacaoDTO notificacaoDTO){
-        log.info("Notificação recebida {}", notificacaoDTO);
+        log.debug("listenPedidoNotifcacaoEvent notificação recebida : {}", notificacaoDTO);
 
         Notificacao notificacao = notificacaoService.enviarNotificacao(converterParaNotificacao(notificacaoDTO));
 
