@@ -14,6 +14,7 @@ import br.com.gabrielferreira.produtos.domain.service.UsuarioService;
 import br.com.gabrielferreira.produtos.domain.service.PedidoService;
 import br.com.gabrielferreira.produtos.domain.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,7 @@ import static br.com.gabrielferreira.produtos.common.utils.ConstantesUtils.*;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@Log4j2
 public class PedidoServiceImpl implements PedidoService {
 
     private final PedidoRepository pedidoRepository;

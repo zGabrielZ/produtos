@@ -22,7 +22,7 @@ public class UsuarioPerfilServiceImpl implements UsuarioPerfilService {
     public Perfil buscarPerfilPorId(Long idUsuario, Long id) {
         validarUsuarioExistente(idUsuario);
         return perfilRepository.buscarPerfilPorId(idUsuario, id)
-                .orElseThrow(() -> new NaoEncontradoException("Perfil não encontrado"));
+                .orElseThrow(() -> new NaoEncontradoException("Perfil não encontrado", idUsuario, id));
     }
 
     @Override
@@ -33,7 +33,7 @@ public class UsuarioPerfilServiceImpl implements UsuarioPerfilService {
 
     private void validarUsuarioExistente(Long idUsuario){
         if(usuarioService.naoExisteUsuarioPorId(idUsuario)){
-            throw new NaoEncontradoException("Usuário não encontrado");
+            throw new NaoEncontradoException("Usuário não encontrado", idUsuario);
         }
     }
 }

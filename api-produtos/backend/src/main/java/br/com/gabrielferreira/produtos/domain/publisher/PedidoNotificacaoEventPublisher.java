@@ -1,13 +1,13 @@
 package br.com.gabrielferreira.produtos.domain.publisher;
 
 import br.com.gabrielferreira.produtos.commons.dto.NotificacaoDTO;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@Slf4j
+@Log4j2
 public class PedidoNotificacaoEventPublisher {
 
     private final RabbitTemplate rabbitTemplate;
@@ -24,10 +24,11 @@ public class PedidoNotificacaoEventPublisher {
     }
 
     public void publishPedidoNotificacaoEvent(NotificacaoDTO notificacaoDTO){
-        log.info("Publicando mensagem {}, exchange {}, rounting key {}", notificacaoDTO, exchange, routingKey);
+        log.debug("publishPedidoNotificacaoEvent mensagem : {}, exchange {}, rounting key {}", notificacaoDTO, exchange, routingKey);
 
         rabbitTemplate.convertAndSend(exchange, routingKey, notificacaoDTO);
 
-        log.info("Mensagem enviado com sucesso");
+        log.debug("publishPedidoNotificacaoEvent enviado com sucesso");
+        log.info("publishPedidoNotificacaoEvent enviado com sucesso");
     }
 }

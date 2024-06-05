@@ -43,7 +43,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario buscarUsuarioPorId(Long id) {
         return usuarioRepository.buscarUsuarioPorId(id)
-                .orElseThrow(() -> new NaoEncontradoException("Usuário não encontrado"));
+                .orElseThrow(() -> new NaoEncontradoException("Usuário não encontrado", id));
     }
 
     @Transactional

@@ -22,7 +22,7 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
     public ItemPedido buscarItemPedidoPorId(Long idUsuario, Long idPedido, Long idItemPedido) {
         validarUsuarioComPedidoExistente(idUsuario, idPedido);
         return itemPedidoRepository.buscarItemPedidoPorId(idUsuario, idPedido, idItemPedido)
-                .orElseThrow(() -> new NaoEncontradoException("Item pedido não encontrado"));
+                .orElseThrow(() -> new NaoEncontradoException("Item pedido não encontrado", idUsuario, idPedido, idItemPedido));
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ItemPedidoServiceImpl implements ItemPedidoService {
 
     private void validarUsuarioComPedidoExistente(Long idUsuario, Long idPedido){
         if(usuarioService.naoExisteUsuarioComPedido(idUsuario, idPedido)){
-            throw new NaoEncontradoException("Usuário com este pedido não encontrado");
+            throw new NaoEncontradoException("Usuário com este pedido não encontrado", idUsuario, idPedido);
         }
     }
 }

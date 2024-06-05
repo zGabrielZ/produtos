@@ -29,3 +29,7 @@ broker:
     pedido:
       notificacao:
         event: ms.produto.notificacaoevent.queue.teste
+
+logging:
+  level:
+    br.com.gabrielferreira.produtos: TRACE

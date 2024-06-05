@@ -18,7 +18,7 @@ public class PerfilServiceImpl implements PerfilService {
     @Override
     public Perfil buscarPerfilPorId(Long id) {
         return perfilRepository.findById(id)
-                .orElseThrow(() -> new NaoEncontradoException("Perfil não encontrado"));
+                .orElseThrow(() -> new NaoEncontradoException("Perfil não encontrado", id));
     }
 
     @Override

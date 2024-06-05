@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/usuarios/{idUsuario}/pedidos/{idPedido}/itens")
 @RequiredArgsConstructor
+@Log4j2
 public class ItemPedidoController {
 
     private final ItemPedidoService itemPedidoService;
@@ -41,9 +43,12 @@ public class ItemPedidoController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ItemPedidoResumidoDTO> buscarItemPedidoPorId(@PathVariable Long idUsuario, @PathVariable Long idPedido, @PathVariable Long id){
+        log.debug("GET buscarItemPedidoPorId idUsuario : {}, idPedido : {}, idItemPedido : {}", idUsuario, idPedido, id);
         ItemPedido itemPedido = itemPedidoService.buscarItemPedidoPorId(idUsuario, idPedido, id);
         ItemPedidoResumidoDTO itemPedidoResumidoDTO = itemPedidoMapper.toItemPedidoResumidoDto(itemPedido);
 
+        log.debug("GET buscarItemPedidoPorId itemPedido : {}", itemPedidoResumidoDTO);
+        log.info("GET buscarItemPedidoPorId nomeProduto : {}", itemPedidoResumidoDTO.getProduto().getNome());
         return ResponseEntity.ok().body(itemPedidoResumidoDTO);
     }
 
@@ -59,6 +64,7 @@ public class ItemPedidoController {
     public ResponseEntity<Page<ItemPedidoResumidoDTO>> buscarItensPedidosPaginados(@PathVariable Long idUsuario,
                                                                                    @PathVariable Long idPedido,
                                                                                    @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+        log.debug("GET buscarItensPedidosPaginados idUsuario : {}, idPedido : {}, pageable : {}", idUsuario, idPedido, pageable);
         Page<ItemPedido> itemPedidos = itemPedidoService.buscarItensPedidosPaginados(idUsuario, idPedido, pageable);
         Page<ItemPedidoResumidoDTO> itemPedidoResumidoDTOS = itemPedidoMapper.toItemPedidoResumidoDtos(itemPedidos);
 

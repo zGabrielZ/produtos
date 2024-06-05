@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/perfis")
 @RequiredArgsConstructor
+@Log4j2
 public class PerfilController {
 
     private final PerfilService perfilService;
@@ -39,9 +41,12 @@ public class PerfilController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<PerfilDTO> buscarPerfilPorId(@PathVariable Long id){
+        log.debug("GET buscarPerfilPorId idPerfil : {}", id);
         Perfil perfil = perfilService.buscarPerfilPorId(id);
         PerfilDTO perfilDTO = perfilMapper.toPerfilDto(perfil);
 
+        log.debug("GET buscarPerfilPorId perfil : {}", perfilDTO);
+        log.info("GET buscarPerfilPorId nomePerfil : {}", perfilDTO.getDescricao());
         return ResponseEntity.ok().body(perfilDTO);
     }
 
@@ -53,6 +58,7 @@ public class PerfilController {
     })
     @GetMapping
     public ResponseEntity<List<PerfilDTO>> buscarPerfis(){
+        log.debug("GET buscarPerfis");
         List<Perfil> perfis = perfilService.buscarPerfis();
         List<PerfilDTO> perfilDTO = perfilMapper.toPerfisDtos(perfis);
 

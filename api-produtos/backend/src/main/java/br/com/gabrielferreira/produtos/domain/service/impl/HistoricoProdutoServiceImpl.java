@@ -28,12 +28,12 @@ public class HistoricoProdutoServiceImpl implements HistoricoProdutoService {
     public HistoricoProduto buscarHistoricoProdutoPorId(Long idProduto, Long idHistoricoProduto) {
         validarProdutoExistente(idProduto);
         return historicoProdutoRepository.buscarHistoricoProdutoPorId(idProduto, idHistoricoProduto)
-                .orElseThrow(() -> new NaoEncontradoException("Histórico produto não encontrado"));
+                .orElseThrow(() -> new NaoEncontradoException("Histórico produto não encontrado", idProduto, idHistoricoProduto));
     }
 
     private void validarProdutoExistente(Long idProduto){
         if(produtoService.naoExisteProdutoPorId(idProduto)){
-            throw new NaoEncontradoException("Produto não encontrado");
+            throw new NaoEncontradoException("Produto não encontrado", idProduto);
         }
     }
 }

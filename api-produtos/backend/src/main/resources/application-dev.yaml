@@ -35,3 +35,4 @@ logging:
   level:
     org:
       flywaydb: DEBUG
+    br.com.gabrielferreira.produtos: TRACE

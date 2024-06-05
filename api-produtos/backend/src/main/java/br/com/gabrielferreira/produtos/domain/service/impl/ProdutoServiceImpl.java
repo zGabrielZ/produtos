@@ -36,7 +36,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     public Produto buscarProdutoPorId(Long id) {
         return produtoRepository.findById(id)
-                .orElseThrow(() -> new NaoEncontradoException("Produto não encontrado"));
+                .orElseThrow(() -> new NaoEncontradoException("Produto não encontrado", id));
     }
 
     @Transactional

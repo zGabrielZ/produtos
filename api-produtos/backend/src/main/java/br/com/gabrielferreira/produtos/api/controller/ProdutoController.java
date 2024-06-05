@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,6 +30,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/produtos")
 @RequiredArgsConstructor
+@Log4j2
 public class ProdutoController {
 
     private final ProdutoService produtoService;
@@ -45,12 +47,15 @@ public class ProdutoController {
     })
     @PostMapping
     public ResponseEntity<ProdutoDTO> cadastrarProduto(@Valid @RequestBody ProdutoCreateDTO produtoCreateDTO){
+        log.debug("POST cadastrarProduto produto : {}", produtoCreateDTO);
         Produto produto = produtoMapper.toProduto(produtoCreateDTO);
         Produto produtoCadastrado = produtoService.salvarProduto(produto);
         ProdutoDTO produtoDTO = produtoMapper.toProdutoDto(produtoCadastrado);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
                 .buildAndExpand(produtoDTO.getId()).toUri();
+        log.debug("POST cadastrarPedido salvo : {}", produtoDTO);
+        log.info("POST cadastrarPedido salvo idProduto : {}", produtoDTO.getId());
         return ResponseEntity.created(uri).body(produtoDTO);
     }
 
@@ -64,9 +69,12 @@ public class ProdutoController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoDTO> buscarProdutoPorId(@PathVariable Long id){
+        log.debug("GET buscarProdutoPorId idProduto : {}", id);
         Produto produto = produtoService.buscarProdutoPorId(id);
         ProdutoDTO produtoDTO = produtoMapper.toProdutoDto(produto);
 
+        log.debug("GET buscarProdutoPorId produto : {}", produtoDTO);
+        log.info("GET buscarProdutoPorId nomeProduto : {}", produtoDTO.getNome());
         return ResponseEntity.ok().body(produtoDTO);
     }
 
@@ -82,10 +90,13 @@ public class ProdutoController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoDTO> atualizarProdutoPorId(@PathVariable Long id, @Valid @RequestBody ProdutoUpdateDTO produtoUpdateDTO){
+        log.debug("PUT atualizarProdutoPorId idProduto : {}, produto : {}", id, produtoUpdateDTO);
         Produto produto = produtoMapper.toProduto(produtoUpdateDTO);
         Produto produtoAtualizado = produtoService.atualizarProduto(id, produto);
         ProdutoDTO produtoDTO = produtoMapper.toProdutoDto(produtoAtualizado);
 
+        log.debug("PUT atualizarProdutoPorId atualizado produto : {}", produtoDTO);
+        log.info("PUT atualizarProdutoPorId atualizado idProduto : {}", produtoDTO.getId());
         return ResponseEntity.ok().body(produtoDTO);
     }
 
@@ -98,7 +109,11 @@ public class ProdutoController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarProdutoPorId(@PathVariable Long id){
+        log.debug("DELETE deletarProdutoPorId idProduto : {}", id);
         produtoService.deletarProdutoPorId(id);
+
+        log.debug("DELETE deletarProdutoPorId deletado idProduto : {}", id);
+        log.info("DELETE deletarProdutoPorId deletado idProduto : {}", id);
         return ResponseEntity.noContent().build();
     }
 
@@ -112,9 +127,9 @@ public class ProdutoController {
     public ResponseEntity<Page<ProdutoDTO>> buscarProdutosPaginados(@PageableDefault(size = 5, sort = "dataInclusao", direction = Sort.Direction.DESC) Pageable pageable,
                                                                     @RequestParam(required = false) String nome,
                                                                     @RequestParam(required = false) BigDecimal preco){
+        log.debug("GET buscarProdutosPaginados nome : {}, preco : {}, pageable : {}", nome, preco, pageable);
         Page<Produto> produtos = produtoService.buscarProdutosPaginados(pageable, nome, preco);
         Page<ProdutoDTO> produtosDtos = produtoMapper.toProdutosDtos(produtos);
-
         return ResponseEntity.ok().body(produtosDtos);
     }
 }

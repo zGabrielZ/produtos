@@ -8,7 +8,7 @@ import br.com.gabrielferreira.produtos.domain.exception.model.ErroPadraoCampos;
 import br.com.gabrielferreira.produtos.domain.exception.model.ErroPadraoFormulario;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,7 +24,7 @@ import static br.com.gabrielferreira.produtos.common.utils.DataUtils.*;
 
 @ControllerAdvice
 @RequiredArgsConstructor
-@Slf4j
+@Log4j2
 public class ApiExceptionHandler {
 
     private final ErroPadraoMapper erroPadraoMapper;
@@ -33,6 +33,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(RegraDeNegocioException.class)
     public ResponseEntity<ErroPadrao> msgException(RegraDeNegocioException e, HttpServletRequest request){
+        log.warn("msgException message : {}, requestUrl : {}", e.getMessage(), request.getRequestURI());
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         ErroPadrao erroPadrao = erroPadraoMapper.toErroPadrao(toFusoPadraoSistema(ZonedDateTime.now()), httpStatus.value(), "Regra de negócio", e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
@@ -40,6 +41,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(NaoEncontradoException.class)
     public ResponseEntity<ErroPadrao> naoEncontradoException(NaoEncontradoException e, HttpServletRequest request){
+        log.warn("naoEncontradoException message : {}, id : {}, requestUrl : {}", e.getMessage(), e.getId(), request.getRequestURI());
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         ErroPadrao erroPadraoModel = erroPadraoMapper.toErroPadrao(toFusoPadraoSistema(ZonedDateTime.now()), httpStatus.value(), "Não encontrado", e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(erroPadraoModel);
@@ -47,6 +49,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroPadrao> validacaoException(MethodArgumentNotValidException e, HttpServletRequest request){
+        log.warn("validacaoException message : {}, requestUrl : {}", e.getMessage(), request.getRequestURI());
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         ErroPadraoCampos erroPadraoCampos = erroPadraoMapper.toErroPadraoCampos(toFusoPadraoSistema(ZonedDateTime.now()), httpStatus.value(), "Erro validação de campos", "Ocorreu um erro de validação nos campos", request.getRequestURI());
 
@@ -60,7 +63,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErroPadrao> erroException(Exception e, HttpServletRequest request){
-        log.error(e.getMessage(), e);
+        log.error("erroException message : {}, requestUrl : {}", e.getMessage(), request.getRequestURI());
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         ErroPadrao erroPadrao = erroPadraoMapper.toErroPadrao(toFusoPadraoSistema(ZonedDateTime.now()), httpStatus.value(), "Erro inesperado", "Ocorreu um erro inesperado no sistema, tente mais tarde", request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(erroPadrao);
@@ -68,6 +71,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErroPadrao> dataIntegrityViolationException(HttpServletRequest request){
+        log.warn("dataIntegrityViolationException requestUrl : {}", request.getRequestURI());
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         ErroPadrao erroPadrao = erroPadraoMapper.toErroPadrao(toFusoPadraoSistema(ZonedDateTime.now()), httpStatus.value(), "Violação de integridade", "Esta entidade possui relacionamento", request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(erroPadrao);

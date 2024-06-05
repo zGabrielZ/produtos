@@ -7,3 +7,6 @@ spring:
       - ${APP_PROFILE:test}
   jpa:
     open-in-view: true
+  output:
+    ansi:
+      enabled: ALWAYS

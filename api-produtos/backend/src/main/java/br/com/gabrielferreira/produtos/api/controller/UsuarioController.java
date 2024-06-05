@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,6 +30,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/usuarios")
 @RequiredArgsConstructor
+@Log4j2
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -47,12 +49,15 @@ public class UsuarioController {
     })
     @PostMapping
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO){
+        log.debug("POST cadastrarUsuario usuario : {}", usuarioCreateDTO);
         Usuario usuario = usuarioMapper.toUsuario(usuarioCreateDTO);
         Usuario usuarioCadastrado = usuarioService.salvarUsuario(usuario);
         UsuarioDTO usuarioDTO = usuarioMapper.toUsuarioDto(usuarioCadastrado);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
                 .buildAndExpand(usuarioDTO.getId()).toUri();
+        log.debug("POST cadastrarUsuario salvo : {}", usuarioDTO);
+        log.info("POST cadastrarUsuario salvo idUsuario : {}", usuarioDTO.getId());
         return ResponseEntity.created(uri).body(usuarioDTO);
     }
 
@@ -66,9 +71,12 @@ public class UsuarioController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResumidoDTO> buscarUsuarioPorId(@PathVariable Long id){
+        log.debug("GET buscarUsuarioPorId idUsuario : {}", id);
         Usuario usuario = usuarioService.buscarUsuarioPorId(id);
         UsuarioResumidoDTO usuarioResumidoDTO = usuarioMapper.toUsuarioResumidoDto(usuario);
 
+        log.debug("GET buscarUsuarioPorId usuario : {}", usuarioResumidoDTO);
+        log.info("GET buscarUsuarioPorId nomeUsuario : {}", usuarioResumidoDTO.getNome());
         return ResponseEntity.ok().body(usuarioResumidoDTO);
     }
 
@@ -84,10 +92,13 @@ public class UsuarioController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioDTO> atualizarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO){
+        log.debug("PUT atualizarUsuario idUsuario : {}, usuario : {}", id, usuarioUpdateDTO);
         Usuario usuario = usuarioMapper.toUsuario(usuarioUpdateDTO);
         Usuario usuarioAtualizado = usuarioService.atualizarUsuario(id, usuario);
         UsuarioDTO usuarioDTO = usuarioMapper.toUsuarioDto(usuarioAtualizado);
 
+        log.debug("PUT atualizarUsuario atualizado usuario : {}", usuarioDTO);
+        log.info("PUT atualizarUsuario atualizado idUsuario : {}", usuarioDTO.getId());
         return ResponseEntity.ok().body(usuarioDTO);
     }
 
@@ -103,9 +114,12 @@ public class UsuarioController {
     })
     @PutMapping("/{id}/senha")
     public ResponseEntity<UsuarioDTO> atualizarSenhaUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioSenhaUpdateDTO usuarioSenhaUpdateDTO){
+        log.debug("PUT atualizarSenhaUsuario idUsuario : {}", id);
         Usuario usuarioAtualizado = usuarioService.atualizarSenhaUsuario(id, usuarioSenhaUpdateDTO.getNovaSenha(), usuarioSenhaUpdateDTO.getAntigaSenha());
         UsuarioDTO usuarioDTO = usuarioMapper.toUsuarioDto(usuarioAtualizado);
 
+        log.debug("PUT atualizarSenhaUsuario atualizado usuario : {}", usuarioDTO);
+        log.info("PUT atualizarSenhaUsuario atualizado idUsuario : {}", usuarioDTO.getId());
         return ResponseEntity.ok().body(usuarioDTO);
     }
 
@@ -118,7 +132,11 @@ public class UsuarioController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarUsuarioPorId(@PathVariable Long id){
+        log.debug("DELETE deletarUsuarioPorId idUsuario : {}", id);
         usuarioService.deletarUsuarioPorId(id);
+
+        log.debug("DELETE deletarUsuarioPorId deletado idUsuario : {}", id);
+        log.info("DELETE deletarUsuarioPorId deletado idUsuario : {}", id);
         return ResponseEntity.noContent().build();
     }
 
@@ -132,6 +150,7 @@ public class UsuarioController {
     public ResponseEntity<Page<UsuarioResumidoDTO>> buscarUsuariosPaginados(@PageableDefault(size = 5, sort = "dataInclusao", direction = Sort.Direction.DESC) Pageable pageable,
                                                                             @RequestParam(required = false) String nome,
                                                                             @RequestParam(required = false) String email){
+        log.debug("GET buscarUsuariosPaginados nome : {}, email : {}, pageable : {}", nome, email, pageable);
         Page<Usuario> usuarios = usuarioService.buscarUsuariosPaginados(pageable, nome, email);
         Page<UsuarioResumidoDTO> usuarioResumidoDTOS = usuarioMapper.toUsuarioResumidoDtos(usuarios);
 

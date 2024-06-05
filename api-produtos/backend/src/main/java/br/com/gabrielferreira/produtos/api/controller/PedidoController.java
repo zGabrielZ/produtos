@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,6 +29,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/usuarios/{idUsuario}/pedidos")
 @RequiredArgsConstructor
+@Log4j2
 public class PedidoController {
 
     private final PedidoService pedidoService;
@@ -44,12 +46,16 @@ public class PedidoController {
     })
     @PostMapping
     public ResponseEntity<PedidoDTO> cadastrarPedido(@PathVariable Long idUsuario, @Valid @RequestBody PedidoCreateDTO pedidoCreateDTO){
+        log.debug("POST cadastrarPedido idUsuario : {}, pedido : {}", idUsuario, pedidoCreateDTO);
         Pedido pedido = pedidoMapper.toPedido(pedidoCreateDTO);
         Pedido pedidoCadastrado = pedidoService.salvarPedidoEnviarNotificacao(idUsuario, pedido);
         PedidoDTO pedidoDTO = pedidoMapper.toPedidoDto(pedidoCadastrado);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
                 .buildAndExpand(pedidoDTO.getId()).toUri();
+
+        log.debug("POST cadastrarPedido salvo : {}", pedidoDTO);
+        log.info("POST cadastrarPedido salvo idPedido : {}", pedidoDTO.getId());
         return ResponseEntity.created(uri).body(pedidoDTO);
     }
 
@@ -63,9 +69,12 @@ public class PedidoController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<PedidoResumidoDTO> buscarPedidoPorId(@PathVariable Long idUsuario, @PathVariable Long id){
+        log.debug("GET buscarPedidoPorId idUsuario : {}, idPedido : {}", idUsuario, id);
         Pedido pedido = pedidoService.buscarPedidoPorId(idUsuario, id);
         PedidoResumidoDTO pedidoResumidoDTO = pedidoMapper.toPedidoResumidoDto(pedido);
 
+        log.debug("GET buscarPedidoPorId pedido : {}", pedidoResumidoDTO);
+        log.info("GET buscarPedidoPorId idPedido : {}", pedidoResumidoDTO.getId());
         return ResponseEntity.ok().body(pedidoResumidoDTO);
     }
 
@@ -80,8 +89,11 @@ public class PedidoController {
     })
     @PutMapping("/{id}/finalizar")
     public ResponseEntity<Void> finalizarPedidoPorId(@PathVariable Long idUsuario, @PathVariable Long id){
+        log.debug("PUT finalizarPedidoPorId idUsuario : {}, idPedido : {}", idUsuario, id);
         pedidoService.finalizarPedidoPorIdEnviarNotificacao(idUsuario, id);
 
+        log.debug("PUT finalizarPedidoPorId atualizado idPedido : {}", id);
+        log.info("PUT finalizarPedidoPorId atualizado idPedido : {}", id);
         return ResponseEntity.ok().build();
     }
 
@@ -96,8 +108,11 @@ public class PedidoController {
     })
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<Void> cancelarPedidoPorId(@PathVariable Long idUsuario, @PathVariable Long id){
+        log.debug("PUT cancelarPedidoPorId idUsuario : {}, idPedido : {}", idUsuario, id);
         pedidoService.cancelarPedidoPorIdEnviarNotificacao(idUsuario, id);
 
+        log.debug("PUT cancelarPedidoPorId atualizado idPedido : {}", id);
+        log.info("PUT cancelarPedidoPorId atualizado idPedido : {}", id);
         return ResponseEntity.ok().build();
     }
 
@@ -112,6 +127,7 @@ public class PedidoController {
     @GetMapping
     public ResponseEntity<Page<PedidoResumidoDTO>> buscarPedidosPaginados(@PathVariable Long idUsuario,
                                                                           @PageableDefault(size = 5, sort = "dataInclusao", direction = Sort.Direction.DESC) Pageable pageable){
+        log.debug("GET buscarPedidosPaginados idUsuario : {}, pageable : {}", idUsuario, pageable);
         Page<Pedido> pedidos = pedidoService.buscarPedidosPaginados(idUsuario, pageable);
         Page<PedidoResumidoDTO> pedidoResumidoDTOS = pedidoMapper.toPedidoResumidoDtos(pedidos);
 
