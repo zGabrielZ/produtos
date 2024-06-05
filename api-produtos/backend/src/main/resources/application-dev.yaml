@@ -1,9 +1,11 @@
 server:
   port: 8081
+  servlet:
+    context-path: '/api-produtos/'
 
 spring:
   application:
-    name: api-produtos
+    name: produtos
   datasource:
     url: jdbc:postgresql://localhost:5000/produto-dev?currentSchema=dev
     username: gabriel

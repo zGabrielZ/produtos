@@ -1,9 +1,11 @@
 server:
   port: 8082
+  servlet:
+    context-path: '/api-notificacao/'
 
 spring:
   application:
-    name: api-notificacao
+    name: notificacao
   mail:
     host: smtp.gmail.com
     port: 587
