@@ -17,21 +17,27 @@ spring:
         format_sql: true
   flyway:
     enabled: false
+  cloud:
+    discovery:
+      enabled: false
 
-# Foi preciso adicionar no arquivo de teste pois o código necessita essa adição quando subir a aplicação
+eureka:
+  client:
+    enabled: false
+
 broker:
   exchange:
     pedido:
       notificacao:
-        event: ms.produto.notificacaoevent.teste
+        event: ms.produto.notificacaoevent
   key:
     pedido:
       notificacao:
-        event: ms.produto.notificacaoevent.key.teste
+        event: ms.produto.notificacaoevent.key
   queue:
     pedido:
       notificacao:
-        event: ms.produto.notificacaoevent.queue.teste
+        event: ms.produto.notificacaoevent.queue
 
 logging:
   level:

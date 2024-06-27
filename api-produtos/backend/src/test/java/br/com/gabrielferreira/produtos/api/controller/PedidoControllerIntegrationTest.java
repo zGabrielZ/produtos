@@ -1,8 +1,11 @@
 package br.com.gabrielferreira.produtos.api.controller;
 
+import br.com.gabrielferreira.produtos.RabbitMQTestContainer;
 import br.com.gabrielferreira.produtos.api.dto.create.PedidoCreateDTO;
+import br.com.gabrielferreira.produtos.commons.dto.NotificacaoDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,16 +14,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 import static br.com.gabrielferreira.produtos.tests.PedidoFactory.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PedidoControllerIntegrationTest {
+class PedidoControllerIntegrationTest extends RabbitMQTestContainer {
 
     private static final String URL = "/usuarios";
     private static final MediaType MEDIA_TYPE_JSON = MediaType.APPLICATION_JSON;
@@ -30,6 +36,9 @@ class PedidoControllerIntegrationTest {
 
     @Autowired
     protected ObjectMapper objectMapper;
+
+    @Autowired
+    protected RabbitTemplate rabbitTemplate;
 
     private PedidoCreateDTO pedidoCreateDTO;
 
@@ -220,5 +229,69 @@ class PedidoControllerIntegrationTest {
 
         resultActions.andExpect(status().isOk());
         resultActions.andExpect(jsonPath("$.content").exists());
+    }
+
+    @Test
+    @DisplayName("Deve cadastrar pedido quando informar campos")
+    @Order(11)
+    void deveCadastrarPedido() throws Exception {
+        String url = URL.concat("/").concat(idUsuarioExistente.toString()).concat("/pedidos");
+        String jsonBody = objectMapper.writeValueAsString(pedidoCreateDTO);
+
+        String pedidoStatusEsperado = "ABERTO";
+        String precoTotalEsperado = BigDecimal.valueOf(39.0).toString();
+
+        ResultActions resultActions = mockMvc
+                .perform(post(url)
+                        .content(jsonBody)
+                        .contentType(MEDIA_TYPE_JSON)
+                        .accept(MEDIA_TYPE_JSON));
+
+        resultActions.andExpect(status().isCreated());
+        resultActions.andExpect(jsonPath("$.id").exists());
+        resultActions.andExpect(jsonPath("$.data").exists());
+        resultActions.andExpect(jsonPath("$.pedidoStatus").value(pedidoStatusEsperado));
+        resultActions.andExpect(jsonPath("$.precoTotal").value(precoTotalEsperado));
+        resultActions.andExpect(jsonPath("$.dataInclusao").exists());
+        resultActions.andExpect(jsonPath("$.itensPedidos").exists());
+
+        NotificacaoDTO message = (NotificacaoDTO) rabbitTemplate.receiveAndConvert("ms.produto.notificacaoevent.queue");
+        assertNotNull(message);
+        assertEquals("Loja Virtual", message.getNomeRemetente());
+    }
+
+    @Test
+    @DisplayName("Deve finalizar pedido por id")
+    @Order(12)
+    void deveFinalizarPedidoPorId() throws Exception {
+        String url = URL.concat("/").concat(idUsuarioExistente.toString()).concat("/pedidos/")
+                .concat(idPedidoExistente.toString()).concat("/finalizar");
+
+        ResultActions resultActions = mockMvc
+                .perform(put(url)
+                        .accept(MEDIA_TYPE_JSON));
+
+        resultActions.andExpect(status().isOk());
+
+        NotificacaoDTO message = (NotificacaoDTO) rabbitTemplate.receiveAndConvert("ms.produto.notificacaoevent.queue");
+        assertNotNull(message);
+        assertNotNull(message.getDados().get("dataPedidoFinalizado"));
+    }
+
+    @Test
+    @DisplayName("Deve cancelar pedido por id")
+    @Order(13)
+    void deveCancelarPedidoPorId() throws Exception {
+        String url = URL.concat("/").concat(idUsuarioExistente.toString()).concat("/pedidos/")
+                .concat(idPedidoExistente.toString()).concat("/cancelar");
+
+        ResultActions resultActions = mockMvc
+                .perform(put(url)
+                        .accept(MEDIA_TYPE_JSON));
+
+        resultActions.andExpect(status().isOk());
+        NotificacaoDTO message = (NotificacaoDTO) rabbitTemplate.receiveAndConvert("ms.produto.notificacaoevent.queue");
+        assertNotNull(message);
+        assertNotNull(message.getDados().get("dataPedidoCancelado"));
     }
 }
